@@ -1,0 +1,16 @@
+
+
+#submit-order {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border: 1px solid #f8f9fa;
+    border-radius: 5px;
+    text-emphasis: bold;
+    cursor: pointer;
+}
+
+.pure-form-aligned {
+    line-height: 200%;
+}

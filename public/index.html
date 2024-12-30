@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trading Platform</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/purecss@3.0.0/build/pure-min.css" integrity="sha384-X38yfunGUhNzHpBaEBsWLO+A0HDYOQi8ufWDkZ0k9e0eXz/tH3II7uKZ9msv++Ls" crossorigin="anonymous">
+    <link rel="stylesheet" href="./index.css">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
+    <script src="./index.js" defer></script>
+</head>
+<body>
+    <header>
+        <h1>TRADING PLATFORM</h1>
+    </header>
+    <main>
+        <section id="google-order-book">
+            <h2> Instrument: {{orderbook.instrumentName}} </h2>
+        </section>
+
+        <section id="submit-order">
+            <h2>Submit Order</h2>
+            <form action="http://192.168.1.108:9999/order" method="PUT" class="pure-form-aligned">
+            <fieldset>
+                <legend>Order Details</legend>
+                <label>Instrument name: </label>
+                    <input type="text" name="instrument-name"> <br>
+                <label>Trader ID: </label>
+                    <input type="text" name="trader-id"><br>
+                <label>Order type: </label>
+                    <input type="button" name="order-type" value="MARKET_BUY" class="pure-button">
+                    <input type="button" name="order-type" value="MARKET_SELL" class="pure-button">
+                    <input type="button" name="order-type" value="LIMIT_BUY" class="pure-button">
+                    <input type="button" name="order-type" value="LIMIT_SELL" class="pure-button"> <br>
+                <label>Price: </label>
+                    <input type="text" name="price"><br>
+                <label>Quantity: </label>
+                    <input type="text" name="quantity"><br>
+                <label>Expiry time: </label>
+                    <input type="datetime-local" name="expiry-time"><br>
+                <button class="pure-button" type="submit">Submit</button>
+            </fieldset>
+            </form>
+        </section>
+
+
+    </main>
+</body>
+</html>

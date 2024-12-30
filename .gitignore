@@ -1,0 +1,42 @@
+# Ignore C++ build files
+*.o
+*.obj
+*.exe
+*.out
+*.a
+*.lib
+*.so
+*.dll
+*.dylib
+*.class
+
+# Ignore C++ build directories
+/build/
+/bin/
+/lib/
+/obj/
+/CMakeFiles/
+/CMakeCache.txt
+/Makefile
+/CMakeLists.txt.user
+
+# Ignore frontend build files
+node_modules/
+dist/
+build/
+
+# Ignore temporary files
+*.log
+*.tmp
+*.swp
+*.bak
+*.old
+
+# Ignore OS generated files
+.DS_Store
+Thumbs.db
+
+# Ignore IDE specific files
+.vscode/
+.idea/
+*.iml
