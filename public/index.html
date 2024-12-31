@@ -15,8 +15,8 @@
     </header>
     <main>
         <section id="order-book">
-            <h2> Instrument: {{orderbook.instrumentName}} </h2>
-            <table class="pure-table pure-table-bordered">
+            <h3> Instrument: {{orderbook.instrumentName}} : {{price}} </h3>
+            <table id="order-book-table" class="pure-table pure-table-bordered">
                 <thead>
                     <tr css="background-color: #f0f0f0;">
                         <th>Price</th>
@@ -35,6 +35,10 @@
                 </tbody>
             </table>
         </section>
+        <section style="float: right; width: 30%;">
+            <h3>Your balance</h3>
+        </section>
+
         <h2>Submit Order</h2>
         <div id="order-form" class="pure-form-aligned" action="/submit-order" method="post">
             <fieldset>

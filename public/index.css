@@ -17,6 +17,11 @@
     text-emphasis: bold;
 }
 
+#order-book-table {
+    margin-top: 10px;
+    margin-left: 20px;
+}
+
 .asks {
     background-color: rgb(255, 106, 106);
 }

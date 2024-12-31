@@ -44,6 +44,8 @@ namespace Exchange
                 if (askOrder.getQuantity() >= buyOrder.getQuantity())
                 {
                     asks.top()->quantity -= buyOrder.getQuantity();
+                    if(asks.top()->quantity == 0)
+                        asks.pop();
                     askOrder.setQuantity(askOrder.getQuantity() - buyOrder.getQuantity());
                     buyOrder.setExecutedQuantity(buyOrder.getExecutedQuantity() + buyOrder.getQuantity());
                     buyOrder.setExecutedDollarAmount(buyOrder.getExecutedDollarAmount() + buyOrder.getQuantity() * askOrder.getPrice());
@@ -106,6 +108,8 @@ namespace Exchange
                 if (bidOrder.getQuantity() >= sellOrder.getQuantity())
                 {
                     bids.top()->quantity -= sellOrder.getQuantity();
+                    if(bids.top()->quantity == 0)
+                        bids.pop();
                     bidOrder.setQuantity(bidOrder.getQuantity() - sellOrder.getQuantity());
                     sellOrder.setExecutedQuantity(sellOrder.getExecutedQuantity() + sellOrder.getQuantity());
                     sellOrder.setExecutedDollarAmount(sellOrder.getExecutedDollarAmount() + sellOrder.getQuantity() * bidOrder.getPrice());
@@ -176,7 +180,7 @@ namespace Exchange
             std::cout << "OrderBook::PlaceLimitBuy: Order: " << order.getOrderId() << " inserted into bid level with price " << order.getPrice() << std::endl;
 #endif
         }
-
+        orders.insert({order.getOrderId(), order});
         return true;
     }
 
@@ -219,7 +223,7 @@ namespace Exchange
             std::cout << "OrderBook::PlaceLimitSell: Order: " << order.getOrderId() << " inserted into ask level with price " << order.getPrice() << std::endl;
 #endif
         }
-
+        orders.insert({order.getOrderId(), order});
         return true;
     }
 
@@ -285,8 +289,27 @@ namespace Exchange
         return false;
     }
 
-    bool OrderBook::CancelOrder(Order &order)
+    bool OrderBook::CancelOrder(ID orderId)
     {
+        auto it = orders.find(orderId);
+        if (it == orders.end())
+        {
+#if DEBUG
+            std::cout << "OrderBook::CancelOrder: Order with id: " << orderId << " not found" << std::endl;
+#endif
+            return false;
+        }
+        Order& order = it->second;
+        if (bidLevels.find(order.getPrice()) != bidLevels.end())
+        {
+            bidLevels[order.getPrice()]->quantity -= order.getQuantity();
+            bidLevels[order.getPrice()]->orderIds.remove(orderId);
+        } 
+        else
+        {
+            askLevels[order.getPrice()]->quantity -= order.getQuantity();
+            askLevels[order.getPrice()]->orderIds.remove(orderId);
+        }
         return true;
     }
 
@@ -320,8 +343,6 @@ namespace Exchange
             return PlaceImmediateOrCancelBuy(orders.at(order.getOrderId()));
         case IMMEDIATE_OR_CANCEL_SELL:
             return PlaceImmediateOrCancelSell(orders.at(order.getOrderId()));
-        case CANCEL:
-            return CancelOrder(orders.at(order.getOrderId()));
         }
         return false;
     }
@@ -349,11 +370,11 @@ namespace Exchange
             }
         }
         orderBookStr += "], \"asks\": [";
-        auto tempAsks = asks;
+        auto tempAsks = PqToVector<decltype(asks)>(asks);
         while (!tempAsks.empty())
         {
-            orderBookStr += "{ \"price\": " + std::to_string(tempAsks.top()->price) + ", \"quantity\": " + std::to_string(tempAsks.top()->quantity) + "}";
-            tempAsks.pop();
+            orderBookStr += "{ \"price\": " + std::to_string(tempAsks.back()->price) + ", \"quantity\": " + std::to_string(tempAsks.back()->quantity) + "}";
+            tempAsks.pop_back();
             if (!tempAsks.empty())
             {
                 orderBookStr += ", ";

@@ -2,6 +2,7 @@
 
 #include <queue>
 #include <unordered_map>
+#include <map>
 #include <memory>
 #include <list>
 #include <limits.h>
@@ -83,7 +84,6 @@ private:
 
     std::unordered_map<double, std::shared_ptr<Level>> bidLevels;
     std::unordered_map<double, std::shared_ptr<Level>> askLevels;
-    std::unordered_map<ID, std::list<ID>::iterator> orderPtrs;
 
 
     double tick;
@@ -98,6 +98,23 @@ private:
     bool PlaceGoodTillCancelledSell(Order& );
     bool PlaceImmediateOrCancelBuy(Order& );
     bool PlaceImmediateOrCancelSell(Order& );
-    bool CancelOrder(Order& );
+    bool CancelOrder(ID );
+
+    template<typename pqType>
+    inline std::vector<std::shared_ptr<Level>> PqToVector(pqType pq) const;
 };
+
+
+template<typename pqType>
+inline std::vector<std::shared_ptr<Level>> OrderBook::PqToVector(pqType pq) const
+{
+    std::vector<std::shared_ptr<Level>> vec;
+    while (!pq.empty())
+    {
+        vec.push_back(pq.top());
+        pq.pop();
+    }
+    return vec;
+}
+
 }
