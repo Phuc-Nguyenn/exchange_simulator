@@ -1,5 +1,12 @@
 
 
+
+#app {
+    margin: 10px;
+    padding: 20px;
+    max-width: 800px;
+}
+
 #submit-order {
     margin-top: 20px;
     margin-bottom: 20px;
@@ -8,9 +15,20 @@
     border: 1px solid #f8f9fa;
     border-radius: 5px;
     text-emphasis: bold;
-    cursor: pointer;
+}
+
+.asks {
+    background-color: rgb(255, 106, 106);
+}
+
+.bids {
+    background-color: rgb(95, 235, 95);
 }
 
 .pure-form-aligned {
     line-height: 200%;
+}
+
+.pure-table-bordered{
+    line-height: 50%;
 }

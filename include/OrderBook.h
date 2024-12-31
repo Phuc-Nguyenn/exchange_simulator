@@ -74,7 +74,7 @@ public:
     const Order& RetrieveOrder(ID orderId) const;
 
 private:
-    ID instrumentId;
+    ID instrumentId; 
     std::string instrumentName;
 
     std::unordered_map<ID, Order> orders;

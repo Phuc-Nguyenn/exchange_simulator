@@ -19,8 +19,23 @@ namespace Exchange
             return;
         });
 
+
+        server.Options("/order", [&](const httplib::Request &req, httplib::Response &res) {
+            SetHeaders(res, {
+                {"Access-Control-Allow-Origin", "*"}, 
+                {"Access-Control-Allow-Headers", "Content-Type"}, 
+                {"Access-Control-Max-Age", "86400"}
+            });
+            res.set_content("", "text/plain");
+            return;
+        });
+
         server.Options("/order-book", [&](const httplib::Request &req, httplib::Response &res) {
-            SetHeaders(res, {{"Access-Control-Allow-Origin", "*"}, {"Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS"}, {"Access-Control-Allow-Headers", "Content-Type"}});
+            SetHeaders(res, {
+                {"Access-Control-Allow-Origin", "*"}, 
+                {"Access-Control-Allow-Headers", "Content-Type"}, 
+                {"Access-Control-Max-Age", "86400"}
+            });
             res.set_content("", "text/plain");
             return;
         });
@@ -53,7 +68,7 @@ namespace Exchange
             return;
         });
 
-        server.Put("/order", [&](const httplib::Request &req, httplib::Response &res) {
+        server.Post("/order", [&](const httplib::Request &req, httplib::Response &res) {
 
             ID instrumentId = resolveInstrument(req, res);
             if(instrumentId == 0) return;
@@ -68,7 +83,7 @@ namespace Exchange
             orderBooks.at(instrumentId)->PlaceOrder(std::move(order));
 
             res.set_content(orderBooks[instrumentId]->RetrieveOrder(orderId).getOrderInfoAsStr(), "application/json");
-            SetHeaders(res, {{"Status", "200"}});
+            SetHeaders(res, {{"Status", "200"}, {"Access-Control-Allow-Origin", "*"}, {"Access-Control-Allow-Headers", "Content-Type"}});
             return;
         });
 

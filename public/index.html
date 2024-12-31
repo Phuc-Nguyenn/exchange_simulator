@@ -9,41 +9,53 @@
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
     <script src="./index.js" defer></script>
 </head>
-<body>
+<body id="app">
     <header>
         <h1>TRADING PLATFORM</h1>
     </header>
     <main>
-        <section id="google-order-book">
+        <section id="order-book">
             <h2> Instrument: {{orderbook.instrumentName}} </h2>
+            <table class="pure-table pure-table-bordered">
+                <thead>
+                    <tr css="background-color: #f0f0f0;">
+                        <th>Price</th>
+                        <th>Quantity</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="order in orderbook.asks" class="asks">
+                        <td>{{order.price}}</td>
+                        <td>{{order.quantity}}</td>
+                    </tr>
+                    <tr v-for="order in orderbook.bids" class="bids">
+                        <td>{{order.price}}</td>
+                        <td>{{order.quantity}}</td>
+                    </tr>
+                </tbody>
+            </table>
         </section>
-
-        <section id="submit-order">
-            <h2>Submit Order</h2>
-            <form action="http://192.168.1.108:9999/order" method="PUT" class="pure-form-aligned">
+        <h2>Submit Order</h2>
+        <div id="order-form" class="pure-form-aligned" action="/submit-order" method="post">
             <fieldset>
-                <legend>Order Details</legend>
                 <label>Instrument name: </label>
-                    <input type="text" name="instrument-name"> <br>
+                    <input type="text" id="instrument-name" v-model="instrumentName"> <br>
                 <label>Trader ID: </label>
-                    <input type="text" name="trader-id"><br>
+                    <input type="text" id="trader-id" v-model="traderId"><br>
                 <label>Order type: </label>
-                    <input type="button" name="order-type" value="MARKET_BUY" class="pure-button">
-                    <input type="button" name="order-type" value="MARKET_SELL" class="pure-button">
-                    <input type="button" name="order-type" value="LIMIT_BUY" class="pure-button">
-                    <input type="button" name="order-type" value="LIMIT_SELL" class="pure-button"> <br>
+                    <input type="radio" name="order-type" value="MARKET_BUY" v-model="orderType"> MARKET_BUY
+                    <input type="radio" name="order-type" value="MARKET_SELL" v-model="orderType"> MARKET_SELL
+                    <input type="radio" name="order-type" value="LIMIT_BUY" v-model="orderType"> LIMIT_BUY
+                    <input type="radio" name="order-type" value="LIMIT_SELL" v-model="orderType"> LIMIT_SELL <br>
                 <label>Price: </label>
-                    <input type="text" name="price"><br>
+                    <input type="text" id="price" v-model="price"><br>
                 <label>Quantity: </label>
-                    <input type="text" name="quantity"><br>
+                    <input type="text" id="quantity" v-model="quantity"><br>
                 <label>Expiry time: </label>
-                    <input type="datetime-local" name="expiry-time"><br>
-                <button class="pure-button" type="submit">Submit</button>
+                    <input type="datetime-local" id="expiry-time" v-model="expiryTime"><br>
+                <button class="pure-button" type="button" @click="submitOrder">Submit</button>
             </fieldset>
-            </form>
-        </section>
-
-
+        </div>
     </main>
 </body>
 </html>
