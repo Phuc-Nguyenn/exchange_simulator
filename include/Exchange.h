@@ -22,6 +22,7 @@ namespace Exchange
 
         ID addInstrument(std::string instrumentName, double tick = 0.01);
         void SetHeaders(httplib::Response &res, std::vector<std::pair<std::string, std::string>>&& headers);
+        std::unordered_map<std::string, std::string> parseJsonStrToMap(const std::string &str);
 
     private:
         httplib::Server server;

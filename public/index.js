@@ -48,16 +48,16 @@ var orderForm = new Vue({
                     alert("Error submitting order.");
                 }
             };
-            xhttp.open("POST", "http://192.168.1.108:9999/submit-order");
+            let queryParams = `
+instrument-name=${encodeURIComponent(self.instrumentName)}&
+trader-id=${encodeURIComponent(self.traderId)}&
+order-type=${encodeURIComponent(self.orderType)}&
+price=${encodeURIComponent(self.price)}&
+quantity=${encodeURIComponent(self.quantity)}&
+expiry-time=${encodeURIComponent(self.expiryTime)}`;
+            xhttp.open("POST", `http://192.168.1.108:9999/order?${queryParams}`);
             xhttp.setRequestHeader("Content-type", "application/json");
-            xhttp.send(JSON.stringify({
-                instrumentName: self.instrumentName,
-                traderId: self.traderId,
-                orderType: self.orderType,
-                price: self.price,
-                quantity: self.quantity,
-                expiryTime: self.expiryTime
-            }));
+            xhttp.send();
         }
     }
 });
