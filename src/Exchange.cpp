@@ -37,28 +37,10 @@ void Exchange::StartServer(std::string&& host, std::uint16_t port)
             res.set_content("No instrument name provided\n", "text/plain");
             SetHeaders(res, {{"Status", "400"}});
             return;
-<<<<<<< HEAD
-        }
-        if(instrumentNameToId.find(it->second) == instrumentNameToId.end())
-        {
-            res.set_content("Instrument name \""+it->second+"\" not found\n", "text/plain");
-            SetHeaders(res, {{"Status", "404"}});
-            return;
-        }
-        res.set_content(std::to_string(instrumentNameToId.at(it->second)), "text/plain");
-        SetHeaders(res, {{"Status", "200"}});
-        return;
-    });
-
-    server.Post("/order", [&](const httplib::Request &req, httplib::Response &res) {
-        
-        SetHeaders(res, { 
-=======
         });
 
         server.Options("/order-book", [&](const httplib::Request &req, httplib::Response &res) {
             SetHeaders(res, {
->>>>>>> 0bf1f7f053af2738d57f6d723e313c5cd8b260d0
                 {"Access-Control-Allow-Origin", "*"}, 
                 {"Access-Control-Allow-Headers", "Content-Type, Authorization"}, 
                 {"Access-Control-Allow-Methods", "POST, GET, OPTIONS"}
@@ -67,9 +49,6 @@ void Exchange::StartServer(std::string&& host, std::uint16_t port)
         if(instrumentId == 0) {
             SetHeaders(res, {{"Status", "404"}});
             return;
-<<<<<<< HEAD
-        }
-=======
         });
 
         server.Get("/instrument-id", [&](const httplib::Request &req, httplib::Response &res) {
@@ -134,7 +113,6 @@ void Exchange::StartServer(std::string&& host, std::uint16_t port)
             SetHeaders(res, {{"Status", "200"}});
             return;
         });
->>>>>>> 0bf1f7f053af2738d57f6d723e313c5cd8b260d0
 
         ID orderId = Utils::GenerateId();
         ID traderId = std::stoull(req.get_param_value("trader-id"));
@@ -227,12 +205,6 @@ ID Exchange::resolveInstrument(const httplib::Request &req, httplib::Response &r
         instrumentId = std::stoull(itId->second);
         if(orderBooks.find(instrumentId) == orderBooks.end())
         {
-<<<<<<< HEAD
-            res.set_content("Instrument id not found", "text/plain");
-            SetHeaders(res, {{"Status", "404"}});
-            return 0;
-        }
-=======
             res.set_content("No instrument id or name provided", "text/plain");
             SetHeaders(res, {{"Status", "400"}});
             return 0;
@@ -258,7 +230,6 @@ ID Exchange::resolveInstrument(const httplib::Request &req, httplib::Response &r
             instrumentId = instrumentNameToId.at(itName->second);
         }
         return instrumentId;
->>>>>>> 0bf1f7f053af2738d57f6d723e313c5cd8b260d0
     }
     else if(itName != req.params.end())
     {
@@ -273,14 +244,8 @@ ID Exchange::resolveInstrument(const httplib::Request &req, httplib::Response &r
     return instrumentId;
 }
 
-<<<<<<< HEAD
-void Exchange::SetHeaders(httplib::Response &res, std::vector<std::pair<std::string, std::string>>&& headers)
-{
-    for(auto &header : headers)
-=======
 
     OrderType Exchange::interpretOrderType(const std::string &orderType)
->>>>>>> 0bf1f7f053af2738d57f6d723e313c5cd8b260d0
     {
         res.set_header(header.first.c_str(), header.second.c_str());
     }
