@@ -74,6 +74,10 @@ expiry-time=${encodeURIComponent(self.expiryTime)}`;
             xhttp.open("POST", `http://192.168.1.108:9999/order?${queryParams}`);
             xhttp.setRequestHeader("Content-type", "application/json");
             xhttp.send();
+<<<<<<< HEAD
         },
+=======
+        }
+>>>>>>> 0bf1f7f053af2738d57f6d723e313c5cd8b260d0
     }
 });

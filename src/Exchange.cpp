@@ -37,6 +37,7 @@ void Exchange::StartServer(std::string&& host, std::uint16_t port)
             res.set_content("No instrument name provided\n", "text/plain");
             SetHeaders(res, {{"Status", "400"}});
             return;
+<<<<<<< HEAD
         }
         if(instrumentNameToId.find(it->second) == instrumentNameToId.end())
         {
@@ -52,6 +53,12 @@ void Exchange::StartServer(std::string&& host, std::uint16_t port)
     server.Post("/order", [&](const httplib::Request &req, httplib::Response &res) {
         
         SetHeaders(res, { 
+=======
+        });
+
+        server.Options("/order-book", [&](const httplib::Request &req, httplib::Response &res) {
+            SetHeaders(res, {
+>>>>>>> 0bf1f7f053af2738d57f6d723e313c5cd8b260d0
                 {"Access-Control-Allow-Origin", "*"}, 
                 {"Access-Control-Allow-Headers", "Content-Type, Authorization"}, 
                 {"Access-Control-Allow-Methods", "POST, GET, OPTIONS"}
@@ -60,7 +67,74 @@ void Exchange::StartServer(std::string&& host, std::uint16_t port)
         if(instrumentId == 0) {
             SetHeaders(res, {{"Status", "404"}});
             return;
+<<<<<<< HEAD
         }
+=======
+        });
+
+        server.Get("/instrument-id", [&](const httplib::Request &req, httplib::Response &res) {
+            auto it = req.params.find("instrument-name");
+            if(it == req.params.end())
+            {
+                res.set_content("No instrument name provided\n", "text/plain");
+                SetHeaders(res, {{"Status", "400"}});
+                return;
+            }
+            if(instrumentNameToId.find(it->second) == instrumentNameToId.end())
+            {
+                res.set_content("Instrument name \""+it->second+"\" not found\n", "text/plain");
+                SetHeaders(res, {{"Status", "404"}});
+                return;
+            }
+            res.set_content(std::to_string(instrumentNameToId.at(it->second)), "text/plain");
+            SetHeaders(res, {{"Status", "200"}});
+            return;
+        });
+
+        server.Options("/order", [&](const httplib::Request &req, httplib::Response &res) {
+            SetHeaders(res, {
+                {"Access-Control-Allow-Origin", "*"}, 
+                {"Access-Control-Allow-Headers", "Content-Type, Authorization"}, 
+                {"Access-Control-Allow-Methods", "POST, GET, OPTIONS"},
+                {"Access-Control-Max-Age", "86400"}
+            });
+            res.set_content("", "text/plain");
+            return;
+        });
+
+        server.Post("/order", [&](const httplib::Request &req, httplib::Response &res) {
+            
+            SetHeaders(res, { 
+                    {"Access-Control-Allow-Origin", "*"}, 
+                    {"Access-Control-Allow-Headers", "Content-Type, Authorization"}, 
+                    {"Access-Control-Allow-Methods", "POST, GET, OPTIONS"}
+            });
+            ID instrumentId = resolveInstrument(req, res);
+            if(instrumentId == 0) {
+                SetHeaders(res, {{"Status", "404"}});
+                return;
+            }
+
+            ID orderId = Utils::GenerateId();
+            ID traderId = std::stoull(req.get_param_value("trader-id"));
+            OrderType orderType = interpretOrderType(req.get_param_value("order-type"));
+            double price = std::stod(req.get_param_value("price"));
+            std::uint64_t quantity = std::stoull(req.get_param_value("quantity"));
+            auto expiryTime = std::chrono::system_clock::from_time_t(std::stoull(req.get_param_value("expiry-time")));
+            Order order(orderId, traderId, instrumentId, orderType, price, quantity, expiryTime);
+            orderBooks.at(instrumentId)->PlaceOrder(std::move(order));
+
+            res.set_content(orderBooks[instrumentId]->RetrieveOrder(orderId).getOrderInfoAsStr(), "application/json");
+            SetHeaders(res, {{"Status", "200"}});
+            return;
+        });
+
+        server.Get("/", [&](const httplib::Request &req, httplib::Response &res) {
+            res.set_file_content("../public/index.html", "text/html");
+            SetHeaders(res, {{"Status", "200"}});
+            return;
+        });
+>>>>>>> 0bf1f7f053af2738d57f6d723e313c5cd8b260d0
 
         ID orderId = Utils::GenerateId();
         ID traderId = std::stoull(req.get_param_value("trader-id"));
@@ -153,10 +227,38 @@ ID Exchange::resolveInstrument(const httplib::Request &req, httplib::Response &r
         instrumentId = std::stoull(itId->second);
         if(orderBooks.find(instrumentId) == orderBooks.end())
         {
+<<<<<<< HEAD
             res.set_content("Instrument id not found", "text/plain");
             SetHeaders(res, {{"Status", "404"}});
             return 0;
         }
+=======
+            res.set_content("No instrument id or name provided", "text/plain");
+            SetHeaders(res, {{"Status", "400"}});
+            return 0;
+        }
+        else if(itId != req.params.end())
+        {
+            instrumentId = std::stoull(itId->second);
+            if(orderBooks.find(instrumentId) == orderBooks.end())
+            {
+                res.set_content("Instrument id not found", "text/plain");
+                SetHeaders(res, {{"Status", "404"}});
+                return 0;
+            }
+        }
+        else if(itName != req.params.end())
+        {
+            if(instrumentNameToId.find(itName->second) == instrumentNameToId.end())
+            {
+                res.set_content("Instrument name not found\n", "text/plain");
+                SetHeaders(res, {{"Status", "404"}});
+                return 0;
+            }
+            instrumentId = instrumentNameToId.at(itName->second);
+        }
+        return instrumentId;
+>>>>>>> 0bf1f7f053af2738d57f6d723e313c5cd8b260d0
     }
     else if(itName != req.params.end())
     {
@@ -171,9 +273,14 @@ ID Exchange::resolveInstrument(const httplib::Request &req, httplib::Response &r
     return instrumentId;
 }
 
+<<<<<<< HEAD
 void Exchange::SetHeaders(httplib::Response &res, std::vector<std::pair<std::string, std::string>>&& headers)
 {
     for(auto &header : headers)
+=======
+
+    OrderType Exchange::interpretOrderType(const std::string &orderType)
+>>>>>>> 0bf1f7f053af2738d57f6d723e313c5cd8b260d0
     {
         res.set_header(header.first.c_str(), header.second.c_str());
     }
