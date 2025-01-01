@@ -31,7 +31,7 @@ namespace Exchange
 
         ID resolveInstrument(const httplib::Request &req, httplib::Response &res);
         OrderType interpretOrderType(const std::string &orderType);
-        void setRequestOptions();
+        void SetRequestOptions();
         std::unordered_map<ID, double> traderBalance;
 
     }; // class Exchange
